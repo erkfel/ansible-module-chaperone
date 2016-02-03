@@ -95,6 +95,11 @@ except ImportError:
 
 def connect_to_vcenter(module, disconnect_atexit=True):
 
+    import ssl
+    context = ssl.create_default_context()
+    context.check_hostname = False
+    context.verify_mode = ssl.CERT_NONE
+
     hostname = module.params['host']
     username = module.params['login']
     password = module.params['password']
@@ -105,7 +110,8 @@ def connect_to_vcenter(module, disconnect_atexit=True):
             host=hostname,
             user=username,
             pwd=password,
-            port=port
+            port=port,
+            sslContext=context
         )
 
         if disconnect_atexit:
